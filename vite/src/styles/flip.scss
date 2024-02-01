@@ -1,0 +1,25 @@
+
+.flip-card {
+    @apply bg-transparent w-[300px] h-[300px];
+    perspective: 1000px;
+  }
+  .flip-card-inner {
+    @apply relative w-full h-full text-center transition-transform duration-[0.6s] shadow-[0_4px_8px_0_rgba(0,0,0,0.2)];
+    transform-style: preserve-3d;
+  }
+  .flip-card:hover .flip-card-inner {
+    transform: rotateY(180deg);
+  }
+  .flip-card-front,
+  .flip-card-back {
+    @apply absolute w-full h-full;
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+  }
+  .flip-card-front {
+    @apply bg-[#bbb] text-[black];
+  }
+  .flip-card-back {
+    @apply bg-[#2980b9] text-[white];
+    transform: rotateY(180deg);
+  }

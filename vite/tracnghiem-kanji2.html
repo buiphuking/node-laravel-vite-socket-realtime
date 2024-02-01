@@ -1,0 +1,734 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<style>
+    .fill-space {
+    height: 100%;
+    width: 100%
+}
+
+#score {
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-align: center;
+    align-items: center;
+    -ms-flex-pack: end;
+    justify-content: flex-end;
+    text-align: right;
+    font-size: calc(11px + .7vmin);
+    margin-right: 10px
+}
+
+#score>span>mark {
+    background-color: transparent;
+    font-weight: 700
+}
+
+#score>span.correct,span.incorrect {
+    margin-right: 3vmin
+}
+
+#score>span.correct>mark {
+    color: green
+}
+
+#score>span.incorrect>mark {
+    color: red
+}
+
+#question-panel {
+    grid-area: question
+}
+
+#question-card-wrap {
+    height: 89%;
+    width: 100%
+}
+
+.flip-container>.flipper {
+    -webkit-transition: .2s;
+    -o-transition: .2s;
+    transition: .2s;
+    -webkit-transform-style: preserve-3d;
+    transform-style: preserve-3d;
+    position: relative
+}
+
+.flip-container>.flipper>.back,.flip-container>.flipper>.front {
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+    position: absolute;
+    top: 0;
+    left: 0
+}
+
+.flip-container>.flipper>.front {
+    z-index: 2;
+    -webkit-transform: rotateY(0deg);
+    transform: rotateY(0deg)
+}
+
+.flip-container>.flipped,.flip-container>.flipper>.back {
+    -webkit-transform: rotateY(180deg);
+    transform: rotateY(180deg)
+}
+
+#question-card-front {
+    -webkit-box-shadow: 0 4px 8px 0 rgba(0,0,0,.2),0 6px 20px 0 rgba(0,0,0,.19);
+    box-shadow: 0 4px 8px 0 rgba(0,0,0,.2),0 6px 20px 0 rgba(0,0,0,.19);
+    border-radius: 10px
+}
+
+#question-card-front>main {
+    height: 85%;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-pack: center;
+    justify-content: center;
+    -ms-flex-align: center;
+    align-items: center;
+    color: #fff;
+    text-align: center
+}
+
+#question-card-front>main.hiragana {
+    background-color: #648a0b
+}
+
+#question-card-front>main.katakana {
+    background-color: #5d6c91
+}
+
+#question-card-front>main.jlptn5 {
+    background-color: #436d40
+}
+
+#question-card-front>main.jlptn4 {
+    background-color: #396996
+}
+
+#question-card-front>main.jlptn3 {
+    background-color: #7d48a0
+}
+
+#question-card-front>main.jlptn2 {
+    background-color: #b55713
+}
+
+#question-card-front>main.jlptn1 {
+    background-color: #af4444
+}
+
+#question-card-front div.kanji {
+    font-size: calc(9px + 10vw)
+}
+
+#question-card-front div.kana {
+    font-size: calc(8px + 4vmin)
+}
+
+#question-card-front div.english {
+    font-size: calc(6px + 3vmin)
+}
+
+#question-card-front>footer {
+    height: 15%;
+    background-color: #fff;
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    grid-template-areas: "left middle right";
+    -ms-flex-align: center;
+    align-items: center;
+    font-size: calc(10px + .4vw);
+    padding: 0 1vw
+}
+
+@media screen and (orientation: portrait) {
+    #question-card-front div.kanji {
+        font-size:calc(9px + 12vh)
+    }
+
+    #question-card-front div.kana {
+        font-size: calc(8px + 4vh)
+    }
+
+    #question-card-front div.english {
+        font-size: calc(6px + 3vh)
+    }
+
+    #question-card-front>footer {
+        padding: 0 1.5vh;
+        font-size: calc(4px + 1.35vh)
+    }
+}
+
+#question-card-front>main.jlptn5 {
+    background-color: #436d40
+}
+
+#question-card-back.jlptn5 {
+    border-color: #436d40
+}
+
+#question-card-back.jlptn5>main {
+    background-color: #436d40
+}
+
+#question-card-back.jlptn5>aside {
+    background-color: #abdba9
+}
+
+#question-card-front div.kanji {
+    font-size: calc(9px + 10vw)
+}
+
+@media screen and (orientation: portrait) {
+    #question-card-front div.kanji {
+        font-size:calc(9px + 12vh)
+    }
+
+    #question-card-front div.kana {
+        font-size: calc(8px + 4vh)
+    }
+
+    #question-card-front div.english {
+        font-size: calc(6px + 3vh)
+    }
+
+    #question-card-front>footer {
+        padding: 0 1.5vh;
+        font-size: calc(4px + 1.35vh)
+    }
+}
+
+.kana,.kanji {
+    font-family: Yu Mincho
+}
+
+.answer>div.front>p.kanji {
+    font-size: calc(10px + 1.5vw)
+}
+
+.answer>div.back {
+    padding: 0;
+    margin: 0;
+    display: grid;
+    grid-template-columns: 0 auto 0;
+    grid-template-areas: "mark null rgutter" "lgutter kanji rgutter" "lgutter kana rgutter" "lgutter english rgutter";
+    grid-template-rows: 9% 38% 27% 25%;
+    color: #fff
+}
+
+.answer>.back>p.kanji {
+    grid-area: kanji;
+    font-size: calc(20px + .6vw)
+}
+
+.answer>div {
+    width: 100%;
+    height: 100%;
+    background-color: #fff;
+    border-radius: 10px;
+    -webkit-box-shadow: 0 4px 8px 0 rgba(0,0,0,.2),0 6px 20px 0 rgba(0,0,0,.19);
+    box-shadow: 0 4px 8px 0 rgba(0,0,0,.2),0 6px 20px 0 rgba(0,0,0,.19);
+    text-align: center;
+    cursor: pointer
+}
+
+@media (hover: hover) {
+    .answer>div:hover {
+        -webkit-box-shadow:0 4px 8px 0 rgba(0,0,0,.5),0 6px 20px 0 rgba(0,0,0,.4);
+        box-shadow: 0 4px 8px 0 rgba(0,0,0,.5),0 6px 20px 0 rgba(0,0,0,.4)
+    }
+}
+
+.answer>div.front {
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-pack: center;
+    justify-content: center;
+    -ms-flex-align: center;
+    align-items: center
+}
+
+
+@media screen and (orientation: portrait) {
+    .answer>div.front>p.kanji {
+        font-size:calc(14px + 2.5vh)
+    }
+
+    .answer>div.front>p.kana {
+        font-size: calc(1px + 1.8vh)
+    }
+
+    .answer>div.front>p.english {
+        font-size: calc(1px + 1.6vh)
+    }
+
+    .answer>.back>p.kanji {
+        font-size: calc(8px + 2.2vh)
+    }
+
+    .answer>.back>p.kana {
+        font-size: calc(4px + 1.3vh)
+    }
+
+    .answer>.back>p.english {
+        font-size: calc(4px + 1vh)
+    }
+
+    .answer>.back>aside>mark {
+        font-size: calc(5px + 1.8vh)
+    }
+}
+
+.left {
+    grid-area: left;
+    text-align: left
+}
+
+.right {
+    grid-area: right;
+    text-align: right
+}
+
+div.mode-container {
+    height: 11%;
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-align: center;
+    align-items: center;
+    -ms-flex-pack: center;
+    justify-content: center
+}
+
+div.mode-container>button {
+    padding: 4px 8px;
+    background-color: #fff;
+    border: 1px solid #aaa;
+    border-radius: 10px;
+    color: #666;
+    margin: 0 5px
+}
+
+div.mode-container>button.selected,div.mode-container>button:hover {
+    background-color: #3d69b3;
+    border: 1px solid #3d69b3;
+    color: #fff
+}
+
+#menu ul#tabs>li.selected {
+    margin-bottom: -1px;
+    background-color: #fff;
+    border-top: 2px solid #db6f09;
+    border-bottom: 1px solid #fff;
+    cursor: default
+}
+
+#answer-panel {
+    grid-area: answers
+}
+
+#answer-grid {
+    height: 89%;
+    width: 100%;
+    display: inline-grid;
+    grid-template-columns: auto auto;
+    grid-gap: 4%
+}
+
+.flip-container {
+    -webkit-perspective: 1000px;
+    perspective: 1000px
+}
+
+.flip-container>.flipper {
+    -webkit-transition: .2s;
+    -o-transition: .2s;
+    transition: .2s;
+    -webkit-transform-style: preserve-3d;
+    transform-style: preserve-3d;
+    position: relative
+}
+
+.flip-container>.flipper>.back,.flip-container>.flipper>.front {
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+    position: absolute;
+    top: 0;
+    left: 0
+}
+
+.flip-container>.flipper>.front {
+    z-index: 2;
+    -webkit-transform: rotateY(0deg);
+    transform: rotateY(0deg)
+}
+
+.flip-container>.flipped,.flip-container>.flipper>.back {
+    -webkit-transform: rotateY(180deg);
+    transform: rotateY(180deg)
+}
+
+#question-card-back {
+    -webkit-box-shadow: 0 4px 8px 0 rgba(0,0,0,.2),0 6px 20px 0 rgba(0,0,0,.19);
+    box-shadow: 0 4px 8px 0 rgba(0,0,0,.2),0 6px 20px 0 rgba(0,0,0,.19);
+    border-radius: 10px;
+    background-color: #fff;
+    display: grid;
+    grid-template-columns: 5fr 7fr;
+    grid-template-rows: 45% 55%;
+    grid-template-areas: "main aside" "footer footer"
+}
+
+#question-card-back.jlptn5 {
+    border-color: #436d40
+}
+
+#question-card-back>main {
+    border-top-left-radius: 10px;
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-pack: center;
+    justify-content: center;
+    -ms-flex-align: center;
+    align-items: center;
+    color: #fff;
+    font-size: calc(10px + 5vw);
+    font-family: Yu Mincho
+}
+
+#question-card-back.hiragana>main {
+    background-color: #648a0b
+}
+
+#question-card-back.katakana>main {
+    background-color: #5d6c91
+}
+
+#question-card-back.jlptn5>main {
+    background-color: #436d40
+}
+
+#question-card-back>aside>p {
+    padding: 0 0 0 5%;
+    font-size: calc(6px + .55vw)
+}
+
+#question-card-back.hiragana>aside {
+    background-color: #b9df6f
+}
+
+#question-card-back.katakana>aside {
+    background-color: #aebee8
+}
+
+#question-card-back.jlptn5>aside {
+    background-color: #abdba9
+}
+
+#question-card-back>footer {
+    grid-area: footer;
+    padding: 4%;
+    font-size: calc(6px + .5vw)
+}
+
+#question-card-back>footer header {
+    padding-bottom: 5%;
+    font-size: calc(6px + .45vw);
+    color: #aaa
+}
+
+#question-card-back>footer table {
+    width: 100%
+}
+
+#question-card-back>footer td {
+    padding: 0 0 5%
+}
+
+@media screen and (orientation: portrait) {
+    #question-card-back>main {
+        font-size:calc(5px + 7vh)
+    }
+
+    #question-card-back>aside>header {
+        font-size: calc(1px + 1.2vh)
+    }
+
+    #question-card-back>aside>p,#question-card-back>footer {
+        font-size: calc(1px + 1.3vh)
+    }
+
+    #question-card-back>footer header {
+        padding-bottom: 4%;
+        font-size: calc(1px + 1.3vh)
+    }
+
+    #question-card-back>footer td {
+        padding: 0 0 4%
+    }
+}
+
+#app>main {
+    display: grid;
+    -ms-flex-pack: center;
+    justify-content: center;
+    -ms-flex-line-pack: center;
+    align-content: center
+}
+
+@media screen and (orientation: landscape) {
+    #app>main {
+        grid-template-columns:28vw 28vw;
+        grid-template-areas: "menu score" "question answers";
+        grid-template-rows: 5% 28vw;
+        grid-gap: 0 5vw;
+        height: 100%
+    }
+
+
+    #score {
+        grid-area: score
+    }
+
+    @media screen and (orientation: landscape) and (max-width:1400px) {
+        #app>main {
+            grid-template-columns:36vw 36vw;
+            grid-template-rows: 5% 36vw
+        }
+    }
+
+    @media screen and (orientation: landscape) and (max-width:1200px) {
+        #app>main {
+            grid-template-columns:40vw 40vw;
+            grid-template-rows: 5% 40vw
+        }
+    }
+
+    @media screen and (orientation: landscape) and (max-height:500px) {
+        #app>main {
+            grid-template-columns:43vw 43vw;
+            grid-template-rows: 10% 90%
+        }
+    }
+
+    @media screen and (orientation: landscape) and (max-height:400px) {
+        #app>main {
+            grid-template-columns:45vw 45vw
+        }
+    }
+}
+
+@media screen and (orientation: portrait) {
+    #app>main {
+        grid-template-columns:20vw 40vw;
+        grid-template-areas: "menu score" "question question" "spacer spacer" "answers answers";
+        grid-template-rows: 5% 42% 2% 42%;
+        height: 100%
+    }
+
+    #score {
+        grid-area: score
+    }
+
+    #grid-spacer {
+        grid-area: spacer
+    }
+}
+
+@media screen and (orientation: portrait) and (max-width:900px) {
+    #app>main {
+        grid-template-columns:22vw 42vw;
+        grid-template-rows: 5% 42% 2% 42%
+    }
+}
+
+@media screen and (orientation: portrait) and (max-width:500px) {
+    #app>main {
+        grid-template-columns:22vw 66vw;
+        grid-template-rows: 5% 46% 2% 46%
+    }
+}
+
+@media screen and (orientation: portrait) and (max-width:400px) {
+    #app>main {
+        grid-template-columns:23vw 67vw
+    }
+}
+
+</style>
+  <body>
+    <div id="root" bis_skin_checked="1">
+      <div id="app" class="fill-space" bis_skin_checked="1">
+        <main class="fill-space">
+          <div id="score" bis_skin_checked="1">
+            <span class="correct"><mark>✓</mark> 0</span
+            ><span class="incorrect"><mark>✘</mark> 0</span
+            ><span>Remaining: 52</span>
+          </div>
+          <div id="question-panel" class="fill-space" bis_skin_checked="1">
+            <div class="fill-space" bis_skin_checked="1">
+              <div
+                id="question-card-wrap"
+                class="flip-container"
+                bis_skin_checked="1"
+              >
+                <div class="fill-space flipper" bis_skin_checked="1">
+                  <div
+                    id="question-card-front"
+                    class="front fill-space"
+                    bis_skin_checked="1"
+                  >
+                    <main class="fill-space jlptn5">
+                      <div class="kanji" bis_skin_checked="1">父</div>
+                    </main>
+                    <footer>
+                      <span class="left">JLPT N5 Group 1</span
+                      ><span class="right">1 of 52</span>
+                    </footer>
+                  </div>
+                  <div
+                    id="question-card-back"
+                    class="back fill-space jlptn5"
+                    bis_skin_checked="1"
+                  >
+                    <main>父</main>
+                    <aside>
+                      <header>English</header>
+                      <p>Father</p>
+                      <header>Kun Yomi</header>
+                      <p>ちち</p>
+                      <header>On Yomi</header>
+                      <p>フ</p>
+                    </aside>
+                    <footer>
+                      <header>Examples</header>
+                      <table>
+                        <tbody>
+                          <tr>
+                            <td>お父さん&nbsp;&nbsp;(おとうさん&nbsp;)</td>
+                            <td>Father</td>
+                          </tr>
+                          <tr>
+                            <td>父母&nbsp;&nbsp;(ふぼ&nbsp;)</td>
+                            <td>Parents</td>
+                          </tr>
+                          <tr>
+                            <td>父兄&nbsp;&nbsp;(ふけい&nbsp;)</td>
+                            <td>Guardians, parents</td>
+                          </tr>
+                          <tr>
+                            <td>父親&nbsp;&nbsp;(ちちおや&nbsp;)</td>
+                            <td>Father</td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </footer>
+                  </div>
+                </div>
+              </div>
+              <div class="mode-container" bis_skin_checked="1">
+                <button class="selected">Kanji</button
+                ><button class="">Kana</button><button class="">English</button>
+              </div>
+            </div>
+          </div>
+          <div id="answer-panel" class="fill-space" bis_skin_checked="1">
+            <div class="fill-space" bis_skin_checked="1">
+              <div id="answer-grid" bis_skin_checked="1">
+                <div class="fill-space" bis_skin_checked="1">
+                  <div class="flip-container fill-space" bis_skin_checked="1">
+                    <div class="answer flipper fill-space" bis_skin_checked="1">
+                      <div class="front" bis_skin_checked="1">
+                        <p class="english">Month, moon</p>
+                      </div>
+                      <div class="back wrong" bis_skin_checked="1">
+                        <aside>
+                          <mark class="correct">✓</mark
+                          ><mark class="incorrect">✘</mark>
+                        </aside>
+                        <p class="kanji">月</p>
+                        <p class="kana">つき</p>
+                        <p class="english">Month, moon</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="fill-space" bis_skin_checked="1">
+                  <div class="flip-container fill-space" bis_skin_checked="1">
+                    <div class="answer flipper fill-space" bis_skin_checked="1">
+                      <div class="front" bis_skin_checked="1">
+                        <p class="english">Child</p>
+                      </div>
+                      <div class="back wrong" bis_skin_checked="1">
+                        <aside>
+                          <mark class="correct">✓</mark
+                          ><mark class="incorrect">✘</mark>
+                        </aside>
+                        <p class="kanji">子</p>
+                        <p class="kana">こ</p>
+                        <p class="english">Child</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="fill-space" bis_skin_checked="1">
+                  <div class="flip-container fill-space" bis_skin_checked="1">
+                    <div class="answer flipper fill-space" bis_skin_checked="1">
+                      <div class="front" bis_skin_checked="1">
+                        <p class="english">River</p>
+                      </div>
+                      <div class="back wrong" bis_skin_checked="1">
+                        <aside>
+                          <mark class="correct">✓</mark
+                          ><mark class="incorrect">✘</mark>
+                        </aside>
+                        <p class="kanji">川</p>
+                        <p class="kana">かわ</p>
+                        <p class="english">River</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="fill-space" bis_skin_checked="1">
+                  <div class="flip-container fill-space" bis_skin_checked="1">
+                    <div class="answer flipper fill-space" bis_skin_checked="1">
+                      <div class="front" bis_skin_checked="1">
+                        <p class="english">Noon</p>
+                      </div>
+                      <div class="back wrong" bis_skin_checked="1">
+                        <aside>
+                          <mark class="correct">✓</mark
+                          ><mark class="incorrect">✘</mark>
+                        </aside>
+                        <p class="kanji">午</p>
+                        <p class="kana">ゴ</p>
+                        <p class="english">Noon</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+              <div class="mode-container" bis_skin_checked="1">
+                <button class="hidden">Kanji</button
+                ><button class="">Kana</button
+                ><button class="selected">English</button>
+              </div>
+            </div>
+          </div>
+          <div id="grid-spacer" bis_skin_checked="1"></div>
+        </main>
+      </div>
+    </div>
+  </body>
+</html>

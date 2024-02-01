@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <style>
+    body {
+      padding: 20px;
+      font-size: 20px;
+    }
+
+    h2 {
+      text-align: center;
+      margin-bottom: 14px;
+    }
+
+    p {
+      margin: 0 auto;
+      max-width: 300px;
+      border: solid 2px #ccc;
+      padding: 12px;
+    }
+
+    button {
+      display: block;
+      margin: 20px auto;
+    }
+
+    .ow {
+      overflow-wrap: break-word;
+      word-wrap: break-word;
+      hyphens: auto;
+    }
+  </style>
+  <body>
+    https://css-tricks.com/almanac/properties/o/overflow-wrap/
+    <h2>overflow-wrap/word-wrap demo</h2>
+
+    <p>
+      This is the first time I've seen the
+      word&nbsp;Pneumonoultramicroscopicsilicovolcanoconiosis. It's a long one.
+    </p>
+
+    <button>Toggle Overflow Wrap</button>
+  </body>
+  <script>
+    document.querySelector("button").addEventListener(
+      "click",
+      function () {
+        document.querySelector("p").classList.toggle("ow");
+      },
+      false
+    );
+  </script>
+</html>
